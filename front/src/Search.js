@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Axios from "axios";
 import Slider from 'rc-slider';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
@@ -15,7 +15,7 @@ function Search(props) {
   const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
   const [displayList, setDisplayList] = useState([]);
-   const [priceRange,setPriceRange]=useState(0);
+  const [priceRange,setPriceRange]=useState(0);
  // const Range = Slider.Range;
  const [value, setValue] = useState(0);
  const [feesValue, setFeesValue ]=useState(5000);
@@ -25,7 +25,21 @@ function Search(props) {
     setCategory(data.category[0]);
     setLocation(data.location[0]);
     getDoctors(data.location[0], data.category[0]);
+
+    // Add event listener for unload to handle logout when the page is closed
+    window.addEventListener('unload', handleUnload);
+
+    return () => {
+      // Remove the event listener when the component is unmounted
+      window.removeEventListener('unload', handleUnload);
+    };
+
   }, [data]); // Include location and category in the dependency array
+
+  const handleUnload = () => {
+    // Perform logout actions when the page is unloaded (closing the application)
+    localStorage.removeItem('userlogged');
+  };
 
   const getDoctors = async (location, category) => {
     try {
@@ -47,12 +61,10 @@ function Search(props) {
     }
   };
 
-
   const OnChangeEventTriggerd = (newValue) => {
     console.log("new Value", newValue);
     setValue(newValue);
   };
-
 
   const handleClick = () => {
      setFeesValue(value);
@@ -60,6 +72,12 @@ function Search(props) {
     
   };
   
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem('userlogged');
+    navigate('/Login');
+  };
   
   const displayAll = () => {
     return displayList.filter((val)=>{
@@ -110,30 +128,32 @@ function Search(props) {
       <div className="containerSearch">
         <div className="headerSearch">
           <div className="logotop">
-        <img src={image} alt="Logo" className='logoimgdocpage' />
-        </div>
-        <div className="bar">
-          <input className='searchBar' type='text' placeholder='Search here' onChange={(e) => setSearch(e.target.value)} />
-          <PersonSearchIcon className="searchIcon" />
+            <img src={image} alt="Logo" className="logoimgdocpage" />
           </div>
-          </div>
-          <div className="priceFilter">
-          <h2 style={{ marginLeft: '20px' }}>Filter By Fees</h2>
-
-            <Slider
-              value={value}
-              min={0}
-              max={5000}
-              onChange={OnChangeEventTriggerd}
+          <div className="bar">
+            <input
+              className="searchBar"
+              type="text"
+              placeholder="Search here"
+              onChange={(e) => setSearch(e.target.value)}
             />
-             <p style={{ marginLeft: '20px' }}>Fees Less than: <strong>{value}</strong></p>
-            <button className="appbutt" onClick={handleClick} style={{ marginLeft: '20px' }}>Apply</button>
+            <PersonSearchIcon className="searchIcon" />
           </div>
-        
+          <div className="header-icons">
+            <button onClick={logout}>Log out</button>
+          </div>
+        </div>
+        <div className="priceFilter">
+          <h2 style={{ marginLeft: '20px' }}>Filter By Fees</h2>
+          <Slider value={value} min={0} max={5000} onChange={OnChangeEventTriggerd} />
+          <p style={{ marginLeft: '20px' }}>Fees Less than: <strong>{value}</strong></p>
+          <button className="appbutt" onClick={handleClick} style={{ marginLeft: '20px' }}>Apply</button>
+        </div>
       </div>
       {displayAll()}
     </div>
   );
+
 }
 
 export default Search;

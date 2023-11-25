@@ -60,41 +60,45 @@ const CreateAccount = () => {
       });
   };
   
-  const getInformation = async () => {
-    try {
-      const response = await Axios.post("http://localhost:3001/checkEmail", {
-        email: email,
-      });
-  
-      console.log('Response:', response);
-      console.log('Data:', response.data);
-      console.log('hi');
-  
-      if (response.data === 'yes') {
-        setErrorMessage('Email already in use');
-        console.log('if');
-      } else {
-        console.log('else');
-        // If the email doesn't exist, proceed to send OTP
-        sendOtp();
-        setDetailsSubmitted(true); // Set the flag to indicate details form submission
-      }
-    } catch (error) {
-      console.error('Error:', error);
+const getInformation = async () => {
+  try {
+    const response = await Axios.post("http://localhost:3001/checkEmail", {
+      email: email,
+    });
+
+    console.log('Response:', response);
+    console.log('Data:', response.data);
+    console.log('hi');
+
+    if (response.data === 'yes') {
+      setErrorMessage('Email already in use. Please use a different email.');
+      console.log('if');
+    } else {
+      console.log('else');
+      // If the email doesn't exist, proceed to send OTP
+      sendOtp();
+      setDetailsSubmitted(true); // Set the flag to indicate details form submission
     }
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    // Check if the email already exists
-    try {
-      await getInformation();
-    } catch (error) {
-      console.error('Error checking email:', error);
-    }
-  };
-  
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Check if the email already exists
+  try {
+    await getInformation();
+  } catch (error) {
+    console.error('Error checking email:', error);
+    // Handle any additional error handling if needed
+  }
+};
+
+// ... (remaining code)
+
+
   const addUser= () => {
     // If the email doesn't exist, proceed to add the user
     Axios.post("http://localhost:3001/adddetails", {
