@@ -47,7 +47,7 @@ const ForgetPassword = () => {
 
   const updatePassword = () => {
     if (otpVerified) {
-      if (newPassword === confirmPassword) {
+      if (newPassword.length >= 8 && newPassword === confirmPassword) {
         Axios.post('http://localhost:3001/update-password', {
           email: email,
           newPassword: newPassword,
@@ -55,10 +55,17 @@ const ForgetPassword = () => {
           .then((response) => {
             console.log(response.data);
             setErrorMessage('Password updated successfully!');
+  
+            // Add code to redirect to the login page after a successful password update
+            setTimeout(() => {
+              window.location.href = '/Login'; // Replace with the actual path to your login page
+            }, 3000); // Redirect after 3 seconds (adjust as needed)
           })
           .catch((error) => {
             setErrorMessage('Error updating password. Please try again.');
           });
+      } else if (newPassword.length < 8) {
+        setErrorMessage('Password should be at least 8 characters long.');
       } else {
         setErrorMessage('Passwords do not match. Please enter them again.');
       }
@@ -66,6 +73,8 @@ const ForgetPassword = () => {
       setErrorMessage('Please verify OTP before updating the password.');
     }
   };
+  
+  
 
   return (
     <div className="forget-password-container">
