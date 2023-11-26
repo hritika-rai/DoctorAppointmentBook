@@ -1,5 +1,3 @@
-// Home.jsx
-
 import React, { useState } from 'react';
 import { Link, useLocation , useNavigate, navigate} from 'react-router-dom';
 import Location from './Location';
@@ -22,10 +20,11 @@ function Home() {
   const { state } = l;
 
   // Access the username from location.state
-  const username = state ? state.username : null;
+  //const username = state ? state.username : null;
 
   const logout = () => {
     localStorage.removeItem('userlogged');
+    localStorage.removeItem('username');
     navigate('/Login');
   };
   
@@ -49,7 +48,7 @@ function Home() {
         </div>
         <div className="logo">
           {/* Your logo content goes here */}
-          <div className="welcome-message">WELCOME , {username}!</div>
+          <div className="welcome-message">WELCOME , {localStorage.getItem("username")}!</div>
           <img src={image} alt="Logo" className='logoimg' />
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 import React,{useEffect, useState} from 'react';
 import './App.css';
 import Axios from "axios";
@@ -47,7 +46,8 @@ function Login() {
         console.log(username);
         //navigate('/Homepage');
         
-        navigate('/Home', { state: { ...location.state, username: response.data[0] } });
+        navigate('/Home');
+        localStorage.setItem('username', response.data[0]);
         setErrorMessage('Succesful Login');
         } )
       }
@@ -79,15 +79,13 @@ function Login() {
         </div>
         </div>
         <div className='logForm'>
-        <div classNmae="bubble" style={{ marginBottom:'5px',marginTop:'-40px' }}>
-      <h2 style={{ margin: '0', fontSize: '2em' ,marginBottom:'15px'}}>Login</h2>
-      </div>
+      <h2>Login Form</h2>
       <div>
       <label>Email:</label>
         <input
           type="text"
           value={email}
-          className="i3"
+          className="i1"
           placeholder="abc@gmail.com"
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -97,18 +95,15 @@ function Login() {
         <input
           type="password"
           value={password}
-          className="i3"
-          placeholder="********"
+          className="i1"
+          placeholder="****"
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
       <button onClick={handleLogin} className="Logbutton">Login</button>
       {errorMessage && <p>{errorMessage}</p>}
-      <div className='existigacc'>
       <Link to="/ForgetPassword">Forget Password</Link>
-      </div><div className='existigacc'>
       <Link to="/CreateAccount">Create Account</Link>
-      </div>
     </div>
     </div>
   );

@@ -39,6 +39,7 @@ function Search(props) {
   const handleUnload = () => {
     // Perform logout actions when the page is unloaded (closing the application)
     localStorage.removeItem('userlogged');
+    localStorage.removeItem('username');
   };
 
   const getDoctors = async (location, category) => {
