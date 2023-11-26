@@ -12,19 +12,35 @@ const ForgetPassword = () => {
   const [otpVerified, setOtpVerified] = useState(false);
 
   const sendOtp = () => {
-    Axios.post('http://localhost:3001/send-otp', {
+    Axios.post('http://localhost:3001/checkEmail', {
       email: email,
     })
       .then((response) => {
         console.log(response.data);
-        setErrorMessage('');
-        setOtpSent(true);
+        if (response.data === 'yes') {
+          // Email exists in the database, proceed to send OTP
+          Axios.post('http://localhost:3001/send-otp', {
+            email: email,
+          })
+            .then((response) => {
+              console.log(response.data);
+              setErrorMessage('');
+              setOtpSent(true);
+            })
+            .catch((error) => {
+              setErrorMessage('Error sending OTP. Please check your email and try again.');
+              setOtpSent(false);
+            });
+        } else {
+          // Email does not exist in the database
+          setErrorMessage('Please enter your registered email.');
+        }
       })
       .catch((error) => {
-        setErrorMessage('Error sending OTP. Please check your email and try again.');
-        setOtpSent(false);
+        setErrorMessage('Error checking email. Please try again.');
       });
   };
+  
 
   const verifyOtp = () => {
     Axios.post('http://localhost:3001/verify-otp', {
@@ -47,7 +63,7 @@ const ForgetPassword = () => {
 
   const updatePassword = () => {
     if (otpVerified) {
-      if (newPassword === confirmPassword) {
+      if (newPassword.length >= 8 && newPassword === confirmPassword) {
         Axios.post('http://localhost:3001/update-password', {
           email: email,
           newPassword: newPassword,
@@ -55,10 +71,17 @@ const ForgetPassword = () => {
           .then((response) => {
             console.log(response.data);
             setErrorMessage('Password updated successfully!');
+  
+            // Add code to redirect to the login page after a successful password update
+            setTimeout(() => {
+              window.location.href = '/Login'; // Replace with the actual path to your login page
+            }, 3000); // Redirect after 3 seconds (adjust as needed)
           })
           .catch((error) => {
             setErrorMessage('Error updating password. Please try again.');
           });
+      } else if (newPassword.length < 8) {
+        setErrorMessage('Password should be at least 8 characters long.');
       } else {
         setErrorMessage('Passwords do not match. Please enter them again.');
       }
@@ -66,6 +89,8 @@ const ForgetPassword = () => {
       setErrorMessage('Please verify OTP before updating the password.');
     }
   };
+  
+  
 
   return (
     <div className="forget-password-container">
