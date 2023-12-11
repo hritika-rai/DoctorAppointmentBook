@@ -178,6 +178,7 @@ app.post("/send-otp", async (req, res) => {
 });
 
 
+
 app.post("/verify-otp", async (req, res) => {
   let connection;
 
@@ -256,10 +257,17 @@ app.post("/adddetails", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+<<<<<<< Updated upstream
 
   try {
     console.log(req.body);
     const connection = await oracledb.getConnection();
+=======
+let connection;
+  try {
+    console.log(req.body);
+     connection = await oracledb.getConnection();
+>>>>>>> Stashed changes
     const insertSQL =
       "BEGIN INSERT INTO CREDENTIALS  VALUES (:username, :email, :password); END;"
     const result = await connection.execute(
@@ -353,8 +361,8 @@ console.log('category:', category);
 let connection;
 try {
 
-  const querySQL = "select doc_name, speciality,fee,reviews,rating,image from doctor where city= :location and speciality=:category";
-  const querySQL2 = "select doc_name, speciality,fee,reviews,rating,image from doctor where city= :location ";
+  const querySQL = "select doc_name, doc_id,speciality,fee,reviews,rating,image,doc_id from doctor where city= :location and speciality=:category";
+  const querySQL2 = "select doc_name, doc_id,speciality,fee,reviews,rating,image,doc_id from doctor where city= :location ";
   // if (speciality==null){
   //   querySQL=querySQL2;
   // }
@@ -402,7 +410,180 @@ try {
 }
 });
 
+//doc description
 
+querydoc = "select doc_name, doc_id,speciality,fee,reviews,rating,image,description,review_num,patient_num,experience from doctor where doc_id=:docid";
+app.get("/GetDoctor", async (req, res) => {
+  let connection; // Declare the connection variable outside the try-catch block
+  const docid = req.query.id;
+  try {
+    connection = await oracledb.getConnection();
+    const result = await connection.execute(querydoc,{docid},);
+    console.log(result.rows);
+    res.send(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching data");
+  } finally {
+    // Release the connection in the finally block
+    if (connection) {
+      try {
+        await connection.close(); // or connection.release() based on your Oracle driver
+      } catch (err) {
+        console.error("Error closing database connection:", err);
+      }
+    }
+  }
+});
+
+
+const queryhosp = "select distinct hosp_id,hospital.hosp_name,slot.booking_day from slot inner join hospital using (hosp_id) where doc_id= :docid";
+
+app.get("/GetHospitals", async (req, res) => {
+  let connection; // Declare the connection variable outside the try-catch block
+  
+  
+  try {
+    console.log("API endpoint is hit!");  
+    const docid = req.query.id;
+    console.log("Received query parameters:", req.query);
+
+    connection = await oracledb.getConnection();
+    
+    const result = await connection.execute(queryhosp, { docid }); // Use { docid } instead of docid
+
+    console.log(result.rows);
+    res.send(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching data");
+  } finally {
+    // Release the connection in the finally block
+    if (connection) {
+      try {
+        await connection.close(); // or connection.release() based on your Oracle driver
+      } catch (err) {
+        console.error("Error closing database connection:", err);
+      }
+    }
+  }
+});
+
+
+
+
+
+// Endpoint to get slots based on doctor ID, hospital ID, and date
+app.get('/slot', async (req, res) => {
+  let connection;
+  try {
+    const { docId, hospId, date } = req.query;
+
+    // Extract day from the provided date
+    const day = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
+
+    // Connect to the Oracle database
+     connection = await oracledb.getConnection(dbConfig);
+
+    // Query to check for available slots on the given day
+    const query = `
+      SELECT * 
+      FROM slot 
+      WHERE doc_id = :docId 
+        AND hosp_id = :hospId 
+        AND booking_day = :day
+    `;
+
+    const result = await connection.execute(query, { docId, hospId, day });
+
+    // Close the connection
+    await connection.close();
+
+    // Send the result to the frontend
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+ finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error('Error closing connection:', err);
+      }
+    }
+  }
+});
+
+app.get('/availableSlots', async (req, res) => {
+  let connection;
+  try {
+    const { hospId, docId, date } = req.query;
+
+    // Log incoming parameters
+    console.log('Request Parameters:', { hospId, docId, date });
+
+    // OracleDB connection
+    connection = await oracledb.getConnection(dbConfig);
+
+    // Extract day from the provided date
+    const day = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
+
+    // Query to get slots for the given doctor and hospital on the specified day
+    const slotQuery = `
+      SELECT s.slot_id, s.booking_time
+      FROM slot s
+      WHERE s.hosp_id = :hospId
+        AND s.doc_id = :docId
+        AND s.booking_day = :day
+    `;
+
+    const slotResult = await connection.execute(slotQuery, { hospId, docId, day });
+
+    // Extract the available slots from the result
+    const availableSlots = slotResult.rows.map((row) => ({
+      slot_id: row[0],
+      booking_time: row[1],
+    }));
+
+    // Query to check for booked slots on the specified date
+    const bookingQuery = `
+      SELECT b.slot_id
+      FROM booking b
+      JOIN slot s ON b.slot_id = s.slot_id
+      WHERE s.hosp_id = :hospId
+        AND s.doc_id = :docId
+        AND s.booking_day = :day
+        AND TRUNC(b.booking_date) = TRUNC(TO_DATE(:dateParam, 'YYYY-MM-DD'))
+    `;
+
+    const bookingResult = await connection.execute(bookingQuery, { hospId, docId, day, dateParam: date });
+
+    // Extract booked slot_ids
+    const bookedSlotIds = bookingResult.rows.map((row) => row[0]);
+
+    // Filter out booked slots from available slots
+    const filteredAvailableSlots = availableSlots.filter(slot => !bookedSlotIds.includes(slot.slot_id));
+
+    // Log available slots
+    console.log('Available Slots:', filteredAvailableSlots);
+
+    res.status(200).json({ availableSlots: filteredAvailableSlots });
+  } catch (error) {
+    console.error('Error fetching available slots:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    // Close the OracleDB connection
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (closeError) {
+        console.error('Error closing OracleDB connection:', closeError);
+      }
+    }
+  }
+});
 
 
 app.listen(3001, () => {

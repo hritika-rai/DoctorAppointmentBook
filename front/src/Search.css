@@ -4,14 +4,19 @@
   padding: 50px;
   padding-top: 10px;
   text-align: center;
-  width: 100vw;
+  width: 100%;
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center; /* Center content horizontally */
   align-items: center;
   margin-bottom: 120px;
+  border-bottom-right-radius: 22px;
+  border-bottom-left-radius: 22px;
+  margin-right: 20px;
 }
+
+
 
 .logotop {
   margin-right: 20px;
@@ -84,6 +89,11 @@
   background-color: #2980b9; /* Darker shade of blue on hover */
 }
 
+
+
+
+
+
 .doctor {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
   display: flex;
@@ -96,6 +106,7 @@
   margin-bottom: 30px; /* Add some space between doctor elements */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-left:20px;
+  margin-right: 20px;
 }
 
 .left-column {
@@ -155,6 +166,7 @@
 }
 
 /* 
+
 
 
 

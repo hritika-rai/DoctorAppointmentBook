@@ -1,0 +1,85 @@
+/* Payment.css */
+
+.headerPayment {
+    position: relative;
+    background: linear-gradient(to bottom, #071ED9, #007AD9);
+    padding: 50px;
+    padding-top: 10px;
+    text-align: center;
+    width: 100vw;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Center elements vertically */
+    justify-content: center; /* Center elements horizontally */
+  }
+  
+  
+  .payment-container {
+    margin-top: 10px;
+    max-width: 600px;
+    margin: auto;
+    font-size: 25px;
+    font-family: 'Times New Roman', Times, serif;
+   }
+
+
+  .confirm-button {
+    background-color: #071ED9;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: auto; /* Add margin-top for spacing */
+  }
+
+  .confirm-button:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
+  
+  .okay-button {
+    background-color: #007AD9;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px; /* Add margin-top for spacing */
+  }
+
+  .centered-toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .dropdown-field {
+    /* Add your styles for the dropdown here */
+    width: 106%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    margin-top: 1px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
+  }
+  .logo {
+    text-align: left;
+  }
+  .logoimg {
+    width: 200px; /* set your desired width */
+    height: 200px; /* set your desired height */
+  }
+
+  .rounded-input {
+    border: 1px solid #ccc; /* Set the desired border color */
+    border-radius: 10px; /* Adjust the value as needed */
+    /* Add other styling properties if necessary */
+  }
+  
+  

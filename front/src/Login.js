@@ -48,6 +48,12 @@ function Login() {
         
         navigate('/Home');
         localStorage.setItem('username', response.data[0]);
+<<<<<<< Updated upstream
+=======
+        localStorage.setItem('email', email);
+        console.log('Email set in local storage:', email);
+
+>>>>>>> Stashed changes
         setErrorMessage('Succesful Login');
         } )
       }
