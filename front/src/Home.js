@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation , useNavigate, navigate} from 'react-router-dom';
+import { Link, useLocation , useNavigate,Navigate} from 'react-router-dom';
 import Location from './Location';
 import Category from './Category';
 import Axios from 'axios';
@@ -37,13 +37,23 @@ function Home() {
       setErrorMessage('');
     }
   };
+  
+  const handleNotificationClick = () => {
+    navigate('/notification');
+  };
 
   return (
     <div className="containerhome">
       <div className="headerhome">
         <div className="header-icons">
-          <NotificationsOutlinedIcon />
-          <SettingsOutlinedIcon />
+        <NotificationsOutlinedIcon
+          onClick={handleNotificationClick}
+          style={{ cursor: 'pointer' }}
+          // Add styles for hover effect
+          onMouseEnter={() => { document.body.style.cursor = "pointer"; }}
+          onMouseLeave={() => { document.body.style.cursor = "default"; }}
+      />          
+      <SettingsOutlinedIcon />
           <button onClick={logout}>log out</button>
         </div>
         <div className="logo">

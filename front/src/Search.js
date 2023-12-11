@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation,Link } from 'react-router-dom';
 import Axios from "axios";
 import Slider from 'rc-slider';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+
 import 'rc-slider/assets/index.css';
 import image from './imagelogo.jpg';
 import './Search.css';
@@ -17,6 +18,8 @@ function Search(props) {
   const [displayList, setDisplayList] = useState([]);
   const [priceRange,setPriceRange]=useState(0);
  // const Range = Slider.Range;
+  //  const[id,setId]=useState('');
+  //  const d={id};
  const [value, setValue] = useState(0);
  const [feesValue, setFeesValue ]=useState(5000);
 
@@ -76,7 +79,9 @@ function Search(props) {
   const navigate = useNavigate();
 
   const logout = () => {
+   
     localStorage.removeItem('userlogged');
+    localStorage.removeItem('username');
     navigate('/Login');
   };
   
@@ -85,14 +90,14 @@ function Search(props) {
       if (search == '' && feesValue==5000) {
         console.log("1");
          return val;}
-       else  if (search == '' && val[2]<=feesValue) {
+       else  if (search == '' && val[3]<=feesValue) {
         console.log("2");
           return val;}
-         else if (val[0].replace(/\s/g, "").toUpperCase().includes(search.replace(/\s/g, "").toUpperCase()) && val[2]<=feesValue)
+         else if (val[0].replace(/\s/g, "").toUpperCase().includes(search.replace(/\s/g, "").toUpperCase()) && val[3]<=feesValue)
                    {
                  return val;
                 }
-                else if (val[1].replace(/\s/g, "").toUpperCase().includes(search.replace(/\s/g, "").toUpperCase()) && val[2]<=feesValue )
+                else if (val[2].replace(/\s/g, "").toUpperCase().includes(search.replace(/\s/g, "").toUpperCase()) && val[3]<=feesValue )
                    {
                  return val;
                 }
@@ -105,19 +110,19 @@ function Search(props) {
       <div className="doctor" key={key}>
         <div className="left-column" >
           <div className="imagedoc">
-        <img src={val[5]} alt="Image"  className="docimg" style={{ width: '100px', height: 'auto' }} />
+        <img src={val[6]} alt="Image"  className="docimg" style={{ width: '100px', height: 'auto' }} />
         </div>
         <div className="doctorInfo">
          <div className="docname"><h1>{val[0]}</h1> </div>
-         <div className="docspeciality"><h3>{val[1]}</h3></div>
-          <div>Fees: {val[2]}</div>
+         <div className="docspeciality"><h3>{val[2]}</h3></div>
+          <div>Fees: {val[3]}</div>
           {/* <div>Reviews: {val[3]}</div>  */}
-           <div>Rating: {val[4]}</div>
+           <div>Rating: {val[5]}</div>
           </div>
         
           </div>
           <div className="right-column">
-          <button className='docbutton'>VIEW PROFILE</button>
+          <Link to={`/Description/${val[1]}`} > <button className='docbutton'>VIEW PROFILE</button></Link>
           </div>
         </div>
       </div>);

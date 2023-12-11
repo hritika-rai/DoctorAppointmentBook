@@ -27,6 +27,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom-right-radius: 22px;
+  border-bottom-left-radius: 22px;
 }
 
 .header-icons {
