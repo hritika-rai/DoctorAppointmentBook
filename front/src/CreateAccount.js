@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import image from './imagelogo.jpg';
+import image from './imglogo.png';
 import './CreateAccount.css';
 
 

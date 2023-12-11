@@ -9,13 +9,12 @@ import CreateAccount from './CreateAccount';
 import Home from './Home';
 import Search from './Search';
 import Location from './Location';
-<<<<<<< Updated upstream
-=======
+
 import Description from './Description';
 import Patient from './Patient';
 import Payment from './Payment';
 import Notification from './Notification';
->>>>>>> Stashed changes
+
 
 const PrivateRoute = ({ element: Element, ...rest }) => {
   const isLoggedIn = localStorage.getItem('userlogged');

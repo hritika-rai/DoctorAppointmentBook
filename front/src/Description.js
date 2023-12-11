@@ -6,7 +6,7 @@ import { Link, useParams ,navigate, useNavigate} from 'react-router-dom';
 import Axios from "axios";
 import Booking from "./Booking";
 import './Description.css';
-import image from './imagelogo.jpg';
+import image from './imglogo.png';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import StarIcon from '@mui/icons-material/Star';
 import AddIcon from '@mui/icons-material/Add';

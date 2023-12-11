@@ -7,8 +7,6 @@ const nodemailer = require("nodemailer");
 app.use(cors());
 app.use(express.json());
 
-
-
 const dbConfig = {
   user: "c##se",
   password: "123",
@@ -83,7 +81,6 @@ console.log(result.rows);
     }
   }
 });
-
 
 app.post("/login", async (req, res) => {
   let connection; // Declare the connection variable outside the try block
@@ -177,8 +174,6 @@ app.post("/send-otp", async (req, res) => {
   }
 });
 
-
-
 app.post("/verify-otp", async (req, res) => {
   let connection;
 
@@ -253,21 +248,15 @@ app.post("/update-password", async (req, res) => {
     }
   }
 });
+
 app.post("/adddetails", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-<<<<<<< Updated upstream
-
-  try {
-    console.log(req.body);
-    const connection = await oracledb.getConnection();
-=======
 let connection;
   try {
     console.log(req.body);
      connection = await oracledb.getConnection();
->>>>>>> Stashed changes
     const insertSQL =
       "BEGIN INSERT INTO CREDENTIALS  VALUES (:username, :email, :password); END;"
     const result = await connection.execute(
@@ -469,10 +458,6 @@ app.get("/GetHospitals", async (req, res) => {
   }
 });
 
-
-
-
-
 // Endpoint to get slots based on doctor ID, hospital ID, and date
 app.get('/slot', async (req, res) => {
   let connection;
@@ -580,6 +565,219 @@ app.get('/availableSlots', async (req, res) => {
         await connection.close();
       } catch (closeError) {
         console.error('Error closing OracleDB connection:', closeError);
+      }
+    }
+  }
+});
+
+app.post("/patientdetails", async (req, res) => {
+  const pname = req.body.pname;
+  const age = new Date(req.body.age);
+  const gender = req.body.gender;
+  const email = req.body.email;
+  const complain = req.body.complain;
+  const hospId = req.body.hospId;
+  const docId = parseInt(req.body.docId, 10);
+  const slotId = req.body.slotId;
+  const date = new Date(req.body.date);
+  const name = req.body.name;
+  const e = req.body.e;
+  const mobile = parseInt(req.body.mobile);
+
+  let connection;
+  try {
+    connection = await oracledb.getConnection();
+    const insertpatient = `
+      DECLARE
+        PID NUMBER(38);
+      BEGIN
+        -- Check if the patient already exists
+        BEGIN
+          SELECT PATIENT_ID INTO PID
+          FROM PATIENT
+          WHERE PATIENT_NAME = :pname AND EMAIL = :email;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            -- Handle the case where no data is found (optional)
+            -- You might want to set PID to a default value or take appropriate action.
+            PID := NULL;
+        END;
+
+        -- If the patient doesn't exist, insert a new record
+        IF PID IS NULL THEN
+          INSERT INTO PATIENT(PATIENT_NAME, DOB, GENDER, PHONE_NUM, EMAIL, ISSUE)
+          VALUES(:pname, :age, :gender, :mobile, :email, :complain)
+          RETURNING PATIENT_ID INTO PID;
+        END IF;
+
+        -- Insert booking information
+        INSERT INTO BOOKING(DOC_ID, PATIENT_ID, SLOT_ID, BOOKING_DATE)
+        VALUES(:docId, PID, :slotId, :date);
+      END;`;
+
+    const ip = await connection.execute(
+      insertpatient,
+      {
+        pname,
+        age,
+        gender,
+        mobile,
+        email,
+        complain,
+        docId,
+        slotId,
+        date,
+      },
+      { autoCommit: true }
+    );
+
+    const insertnotify = `
+      DECLARE
+        PATIENT_ID NUMBER(38);
+        DOCTOR_NAME VARCHAR2(255);
+        HOSPITAL_NAME VARCHAR2(255);
+        BOOKING_DAY VARCHAR2(255);
+        BOOKING_DATE DATE;
+        BOOKING_TIME VARCHAR2(255);
+      BEGIN
+        -- Retrieve Patient ID
+        SELECT PATIENT.PATIENT_ID
+        INTO PATIENT_ID
+        FROM PATIENT
+        WHERE PATIENT.PATIENT_NAME = :pname AND PATIENT.EMAIL = :email;
+
+        -- Retrieve Doctor Name
+        SELECT DOCTOR.DOC_NAME
+        INTO DOCTOR_NAME
+        FROM DOCTOR
+        WHERE DOCTOR.DOC_ID = :docId;
+
+        -- Retrieve Hospital Name
+        SELECT HOSPITAL.HOSP_NAME
+        INTO HOSPITAL_NAME
+        FROM HOSPITAL
+        WHERE HOSPITAL.HOSP_ID = :hospId;
+
+        -- Retrieve Booking Day and Time
+        SELECT SLOT.BOOKING_DAY, SLOT.BOOKING_TIME
+        INTO BOOKING_DAY, BOOKING_TIME
+        FROM SLOT
+        WHERE SLOT.SLOT_ID = :slotId AND SLOT.DOC_ID = :docId AND SLOT.HOSP_ID = :hospId;
+
+        -- Retrieve Booking Date
+        SELECT BOOKING.BOOKING_DATE
+        INTO BOOKING_DATE
+        FROM BOOKING
+        WHERE BOOKING.SLOT_ID = :slotId AND BOOKING.DOC_ID = :docId AND BOOKING.PATIENT_ID = PATIENT_ID;
+
+        -- Insert notification
+        INSERT INTO NOTIFICATIONS (EMAIL, MESSAGE, NOTIFICATION_DATE, NOTIFICATION_TIME)
+        VALUES (:e, 'Your appointment with Dr. ' || DOCTOR_NAME || ' at ' || HOSPITAL_NAME || ' on ' || BOOKING_DAY || ' ' || TO_CHAR(BOOKING_DATE, 'YYYY-MM-DD') || ' at ' || BOOKING_TIME || ' is confirmed.', SYSDATE, CURRENT_TIMESTAMP);
+      END;`;
+
+const insertn = await connection.execute(
+  insertnotify,
+  {
+    pname,
+    email,
+    e,
+    slotId,
+    docId,
+    hospId,
+  },
+  { autoCommit: true }
+);
+
+
+    // The rest of your code remains unchanged...
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error inserting values");
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err.message);
+      }
+    }
+  }
+});
+
+
+app.get("/notifications", async (req, res) => {
+  let connection;
+  try {
+    const userEmail = req.query.email;
+    //const userEmail = 'hritikarathi08@gmail.com';
+
+    console.log(userEmail);
+
+    // Connect to the Oracle database
+    connection = await oracledb.getConnection(dbConfig);
+
+    // Query to get notifications for the given user email
+    const query = `
+      SELECT notification_id, message
+      FROM notifications
+      WHERE email = :userEmail
+    `;
+
+    const result = await connection.execute(query, { userEmail });
+
+    console.log(result);
+
+    // Send the result to the frontend
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error('Error closing connection:', err);
+      }
+    }
+  }
+});
+
+app.delete('/notifications/:id', async (req, res) => {
+  let connection;
+
+  try {
+    const notificationId = req.params.id;
+    console.log(notificationId);
+
+    // Connect to the Oracle database
+    connection = await oracledb.getConnection();
+
+    // Query to delete the notification by ID
+    const deleteQuery = 'DELETE FROM notifications WHERE notification_id = TO_NUMBER(:notificationId)';
+
+    console.log('deleting');
+
+    // Execute the delete query
+    await connection.execute(deleteQuery, { notificationId });
+
+    // Commit the transaction
+    await connection.commit();
+
+    console.log("deleted");
+
+    // Send a success response
+    res.status(200).send('Notification deleted successfully');
+  } catch (error) {
+    console.error('Error deleting notification:', error);
+    res.status(500).send('Error deleting notification');
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err.message);
       }
     }
   }

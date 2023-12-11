@@ -157,7 +157,9 @@ function Booking(props) {
               {slots.map((slot) => (
                 <li key={slot.slot_id} style={{ margin: '10px 0', textAlign: 'center' }}>
                   <button
+
                     className={`bookButton ${slot.slot_id === selected ? 'selected' : ''}`}
+                    style={{marginRight:'10px'}}
                     onClick={() => handleSlotClick(slot)}
                   >
                     {slot.booking_time ?? 'N/A'}
@@ -166,7 +168,7 @@ function Booking(props) {
               ))}
             </ul>
             <div className='confirm' style={{ marginTop: '20px' }}>
-              <Link to={time ? '/Patient' : '#' } state={data}>
+              <Link to={time ? '/Patient' : '#' } state={data} className='link'>
               <button className={`bookButton center-align-button ${time ? 'active' : ''}`} onClick={handleBookNowClick}>
                   Book Now
                 </button>

@@ -3,7 +3,7 @@ import { Link, useLocation , useNavigate,Navigate} from 'react-router-dom';
 import Location from './Location';
 import Category from './Category';
 import Axios from 'axios';
-import image from './imagelogo.jpg'; // Import the image
+import image from './imglogo.png'; // Import the image
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';

@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Axios from "axios";
 import 'react-toastify/dist/ReactToastify.css';
 import './Payment.css'; // Import the CSS file
-import image from './imagelogo.jpg'; // Import the image
+import image from './imglogo.png'; // Import the image
 
 const Payment = () => {
   const location = useLocation();
@@ -150,14 +150,14 @@ const Payment = () => {
   return (
     <div>
         
-        <div className="pheader">
+        <div className="headerSearch">
           <div className="logotop">
         <img src={image} alt="Logo" className='logoimgaccpage' />
         </div>
         
        </div>
          
-      <div className="payment-container" style={{ borderRadius: '8px', padding: '20px', fontSize:'16px' }}>
+      <div className="payment-container" style={{ borderRadius: '8px', padding: '20px', fontSize:'16px',marginTop:'-120px' }}>
       <h1
   className="patient"
   style={{

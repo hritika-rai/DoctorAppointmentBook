@@ -25,6 +25,7 @@ button:active {
 .bookButton {
   background-color: #3498db;
   width: 120px;
+  
 }
 
 .bookButton:hover,
@@ -38,6 +39,7 @@ button:active {
 .viewButton {
   background-color: #3498db;
   width: 220px;
+  
 }
 
 .viewButton:hover,
@@ -74,4 +76,12 @@ button:active {
 .buttons-container {
   flex: 1;
   margin-top: 10px; /* Adjust the value as needed */
+}
+
+.confirm{
+  text-decoration: none;
+}
+
+.link{
+  text-decoration: none;
 }

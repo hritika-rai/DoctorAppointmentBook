@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react';
 import './App.css';
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate, Navigate, useLocation} from 'react-router-dom';
-import image from './imagelogo.jpg';
+import image from './imglogo.png';
 import './Login.css';
 
 function Login() {
@@ -48,12 +48,10 @@ function Login() {
         
         navigate('/Home');
         localStorage.setItem('username', response.data[0]);
-<<<<<<< Updated upstream
-=======
         localStorage.setItem('email', email);
         console.log('Email set in local storage:', email);
 
->>>>>>> Stashed changes
+
         setErrorMessage('Succesful Login');
         } )
       }

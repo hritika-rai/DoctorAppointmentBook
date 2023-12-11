@@ -5,7 +5,7 @@ import Slider from 'rc-slider';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
 import 'rc-slider/assets/index.css';
-import image from './imagelogo.jpg';
+import image from './imglogo.png';
 import './Search.css';
 
 

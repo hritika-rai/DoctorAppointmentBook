@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
-import image from './imagelogo.jpg';
+import image from './imglogo.png';
 import './PatientDetails.css';
 
 function Patient() {
@@ -100,14 +100,14 @@ const isValidDate = (value) => !isNaN(new Date(value).getTime());
   return (
     
 <div>
-<div className="pheader">
+<div className="headerSearch">
           <div className="logotop">
         <img src={image} alt="Logo" className='logoimgaccpage' />
         </div>
         
        </div>
 
-  <div className="patient-details-container" style={{ borderRadius: '8px', padding: '20px', fontSize:'16px' }}>
+  <div className="patient-details-container" style={{ borderRadius: '8px', padding: '20px', fontSize:'16px',marginTop:'-120px' }}>
   <h1
   className="patient"
   style={{
@@ -132,7 +132,7 @@ const isValidDate = (value) => !isNaN(new Date(value).getTime());
         style={{ borderRadius: '8px'} }
       />
 
-      <label htmlFor="age">Age:</label>
+      <label htmlFor="age">Date Of Birth:</label>
       <input
         type="date"
         id="age"

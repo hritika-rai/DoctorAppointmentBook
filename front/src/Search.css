@@ -64,7 +64,7 @@
 }
 
 .rc-slider-handle {
-  background-color: #3498db; /* Blue color for the slider handle */
+  background-color:#071ED9;; /* Blue color for the slider handle */
   border: 2px solid #192a56; /* Border to create the ink blue colored tip */
 }
 
@@ -76,7 +76,7 @@
   font-size: 14px; /* Adjust font size for the slider marks */
 }
 .appbutt {
-  background-color: #3498db; /* Blue color for the button */
+  background-color:#071ED9;; /* Blue color for the button */
   color: white;
   padding: 10px 20px;
   cursor: pointer;
